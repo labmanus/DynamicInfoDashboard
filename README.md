@@ -66,7 +66,7 @@ Modify any constants such as the ```calendarId``` in ```server.py``` to match yo
 ```
 python server.py
 ```
-### 2. Set Up Auto-Start on Raspberry Pi:
+#### 2. Set Up Auto-Start on Raspberry Pi:
 - Create a systemd service to start the Flask server on boot:
 ```
 sudo nano /etc/systemd/system/dashboard.service
@@ -91,12 +91,12 @@ WantedBy=multi-user.target
 sudo systemctl enable dashboard.service
 sudo systemctl start dashboard.service
 ```
-### 3. View the Dashboard:
+#### 3. View the Dashboard:
 - Launch Chromium browser in fullscreen mode:
 ```
 chromium-browser --start-fullscreen --kiosk http://127.0.0.1:5000
 ```
-### 4. Hide the Cursor:
+#### 4. Hide the Cursor:
 - Install ```unclutter```:
 ```
 sudo apt-get install unclutter
@@ -109,9 +109,48 @@ unclutter -idle 0
 ```
 python server.py
 ```
-### 2. Find the Raspberry Pi's IP Address:
+#### 2. Find the Raspberry Pi's IP Address:
 ```
 hostname -I
 ```
+Note the IP address (e.g., ```192.168.0.100```).
 
+#### 3. Access the Dashboard:
+- Open a browser on any device connected to the same network and navigate to:
+```
+http://<Raspberry Pi IP>:5000
+```
+### Option 3: Host Locally on Windows/MacOS
 
+#### 1. Start the Flask Server:
+```
+python server.py
+```
+#### 2. Access the Dashboard:
+Open a browser on the same machine and navigate to:
+```
+http://127.0.0.1:5000
+```
+#### 3. Access from Other Devices:
+Replace ```127.0.0.1``` with your machine's IP address to access the dashboard on other devices.
+
+## Project Structure
+```
+.
+├── server.py                      # Backend logic and API integrations
+├── templates/
+│   └── index.html                 # HTML for rendering the dashboard
+├── static/
+│   ├── images/                    # Static images for styling
+│   ├── goole_calender_api.json    # 
+├── requirements.txt               # List of Python dependencies
+└── README.md                      # Project documentation
+```
+## Features Overview
+- **Google Calendar Integration:** Displays events fetched from the Google Calendar API, grouped by date, and limited to the next 7 days.
+
+- **Weather Information:** Fetches and displays the current and next day's weather using Open-Meteo's API. Weather symbols and descriptions are included.
+
+- **Regional Time:** Shows current times for selected regions.
+
+- **Currency Conversion:** Hardcoded exchange rates as placeholders (can be extended for dynamic updates).
