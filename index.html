@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <style>
+      /* General styling */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden; /*Hide scroll bars */
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-image: url("/static/images/pexels-mudassir-ali-2680270.jpg");
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      /* Header styling */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: #fff;
+        display: flex;
+        justify-content: space-around;
+        font-size: 50px;
+        margin-bottom: 40px;
+      }
+
+      #refresh-counter {
+        font-size: 9px;
+        margin-top: 1%;
+      }
+
+      /* Middle section styling */
+      .middle-section {
+        display: flex;
+        flex: 1;
+        flex-direction: row; /* Adjusted to display left and right sections side by side */
+        margin-top: 2%;
+      }
+      .left-section,
+      .right-section {
+        flex: 1;
+        margin-top: 15px; /* Adjust this value to match the space taken by the header */
+      }
+
+      /* Footer styling */
+      footer {
+        color: #fff;
+        padding: 0%;
+        text-align: center;
+        font-size: 32px;
+      }
+      #todays-weather {
+        padding-left: 2%;
+        padding-right: 10%;
+      }
+      #tomorrows-weather {
+        padding-left: 0%;
+      }
+      /* Table styling */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 10px;
+        background-color: rgba(247, 247, 247, 0.664);
+      }
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .card {
+        background-color: rgba(247, 247, 247, 0.664);
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 2px;
+        margin-right: 1px;
+        margin-left: 1px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .card:hover{
+        transform: scale(1.02);
+        bx-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .card h2 {
+        font-size: 42px;
+        margin-bottom: 2px;
+        color: #333;
+      }
+
+      .card ul {
+        font-size: 30px;
+        padding: 0;
+        list-style-type: none;
+      }
+
+      .card li {
+        font-size: 30px;
+        margin-bottom: 5px;
+      }
+
+      .card strong {
+        color: #007bff;
+      }
+      .image-container {
+        height: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url("/static/images/tirupati.jpg");
+        background-repeat: no-repeat; /* Prevent the image from repeating */
+        background-position: top;
+        margin-top: 6%;
+      }
+      .image-container img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px; /* Added border radius */
+        object-fit: fill;
+      }
+
+      .timezones,
+      .currency {
+        display: inline-flex;
+        color: rgb(141, 86, 18);
+        font-size: 30px;
+        list-style-position: inside;
+        margin-left: 6%;
+      }
+
+      #timezone,
+      #currencies {
+        list-style-type: none;
+      }
+
+      .timezones, #timezone{
+        margin-left: 1%;
+        margin-right: -1%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <p id="refresh-counter">
+          Next refresh in <span id="counter">60</span> seconds
+        </p>
+        <!-- Display current date and time -->
+        <span id="date"></span>
+        <span id="time"></span>
+      </header>
+      <div class="middle-section">
+        <div class="left-section">
+          <div class="image-container">
+            <!-- Image will be displayed here -->
+          </div>
+
+	<div class="currency">
+            <!-- Currency rates will be displayed here -->
+            <ul class="card" id="currencies">
+              <li>GBP <span>1</span></li>
+              <li>USD <span>1.2</span></li>
+              <li>INR <span>150</span></li>
+              <!-- Add more currency conversions as needed -->
+            </ul>
+          </div>
+
+          <div class="timezones">
+            <ul class="card" id="timezone">
+              <li>Seattle - <span>{{time_for_regions.seattle}}</span></li>
+              <li>India - <span>{{time_for_regions.india}}</span></li>
+              <li>Sydney - <span>{{time_for_regions.sydney}}</span></li>
+              <li>Belgrade - <span>{{time_for_regions.belgrade}}</span></li>
+              <!-- Add more time zones as needed -->
+            </ul>
+          </div>
+        </div>
+
+        <div class="right-section">
+          <h1></h1>
+          {% for date, events in grouped_events.items() %}
+          <div class="card">
+            <h2>{{ date }}</h2>
+            <ul>
+              {% for event in events %}
+              <li>
+                <strong>{{ event.summary }}</strong>
+                <br />
+                {% if event.start.dateTime%} {{event.start.dateTime}} - {{
+                event.end.dateTime}} {% else %} All Day {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endfor %}
+
+          
+        </div>
+      </div>
+      <footer>
+        <span id="todays-weather">
+          <!-- Display today's weather -->
+          Today:{{today_weather.todays_weather_code}} {{ today_weather.todays_temperature
+          }}{{today_weather.temp_units }},Sunrise:{{today_weather.todays_sunrise}},Sunset:{{today_weather.todays_sunset}}
+        </span>
+
+        <span id="tomorrow_weather">
+          <!-- Display tomorrow's weather -->
+          Tomorrow:{{tomorrow_weather.tomorrows_weather_code}} {{ tomorrow_weather.tomorrows_max_temp }}{{
+          tomorrow_weather.temp_units }} to {{
+          tomorrow_weather.tomorrows_min_temp }}{{ tomorrow_weather.temp_units
+          }},Sunrise:{{ tomorrow_weather.tomorrows_sunrise }},Sunset:{{
+          tomorrow_weather.tomorrows_sunset }}</span
+        >
+      </footer>
+    </div>
+
+    <script>
+      function updateDateAndTime() {
+        var dateElement = document.getElementById("date");
+        var timeElement = document.getElementById("time");
+
+        var now = new Date();
+        var options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        dateElement.textContent = now.toLocaleDateString("en-UK", options);
+
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        timeElement.textContent = hours + ":" + minutes + " " + ampm;
+
+        setTimeout(updateDateAndTime, 60000); // Update every minute
+      }
+
+      // Call the function to update date and time
+      updateDateAndTime();
+
+      function updateTable() {
+        var counterElement = document.getElementById("counter");
+        var count = parseInt(counterElement.textContent);
+        if (count <= 0) {
+          count = 60;
+          location.reload(); // Reload the page to fetch fresh data
+        } else {
+          count--;
+        }
+        counterElement.textContent = count;
+      }
+
+      setInterval(updateTable, 1000); // Start the update process
+    </script>
+  </body>
+</html>
