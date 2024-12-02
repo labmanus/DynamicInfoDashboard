@@ -103,5 +103,15 @@ sudo apt-get install unclutter
 unclutter -idle 0
 ```
 
+### Option 2: Host on Raspberry Pi and View from Another Device
+
+#### 1. Start the Flask Server:
+```
+python server.py
+```
+### 2. Find the Raspberry Pi's IP Address:
+```
+hostname -I
+```
 
 
