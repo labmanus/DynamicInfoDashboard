@@ -137,14 +137,14 @@ Replace ```127.0.0.1``` with your machine's IP address to access the dashboard o
 ## Project Structure
 ```
 .
-├── server.py                      # Backend logic and API integrations
+├── server.py                          # Backend logic and API integrations
 ├── templates/
-│   └── index.html                 # HTML for rendering the dashboard
+│   └── index.html                     # HTML for rendering the dashboard
 ├── static/
-│   ├── images/                    # Static images for styling
-│   ├── goole_calender_api.json    # 
-├── requirements.txt               # List of Python dependencies
-└── README.md                      # Project documentation
+│   ├── images/                        # Static images for styling
+│   ├── my-project-credentials.json    # google calendar api credentials
+├── requirements.txt                   # List of Python dependencies
+└── README.md                          # Project documentation
 ```
 ## Features Overview
 - **Google Calendar Integration:** Displays events fetched from the Google Calendar API, grouped by date, and limited to the next 7 days.
@@ -154,3 +154,49 @@ Replace ```127.0.0.1``` with your machine's IP address to access the dashboard o
 - **Regional Time:** Shows current times for selected regions.
 
 - **Currency Conversion:** Hardcoded exchange rates as placeholders (can be extended for dynamic updates).
+
+## Future Improvements
+- Dynamic weather icons using Unicode-friendly emojis.
+- Fetch real-time currency conversion rates via an API.
+- Add authentication for Google Calendar API to allow multiple user accounts.
+
+
+## Google Calendar API Setup
+
+Follow the steps below to set up the Google Calendar API.
+
+#### Steps to Get Google Calendar API Credentials
+
+1. **Create a Project on Google Cloud Console**:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+   - Click on **Select a Project** and then **New Project**.
+   - Enter a project name and click **Create**.
+
+2. **Enable the Google Calendar API**:
+   - Open the [Google API Library](https://console.cloud.google.com/apis/library).
+   - Search for "Google Calendar API" and click on it.
+   - Click the **Enable** button.
+
+3. **Create a Service Account**:
+   - Navigate to the [Service Accounts page](https://console.cloud.google.com/iam-admin/serviceaccounts).
+   - Click **Create Service Account**.
+   - Provide a name for the service account and click **Create and Continue**.
+   - Assign the role **Project -> Editor** and click **Continue**.
+   - Click **Done** to finish.
+
+4. **Generate a Key for the Service Account**:
+   - In the Service Accounts page, click the three dots next to your service account and select **Manage keys**.
+   - Click **Add Key -> Create New Key** and choose **JSON**.
+   - Download the JSON key file and place it in your project directory (e.g., `static/my-project-credentials.json`).
+
+5. **Share Your Google Calendar with the Service Account**:
+   - Open Google Calendar in your browser.
+   - Click on the **Options (three dots)** next to the calendar you want to share and select **Settings and Sharing**.
+   - Under **Share with specific people**, click **Add People**.
+   - Add the email address of your service account (it ends with `iam.gserviceaccount.com`) and give it **Make Changes to Events** access.
+
+6. **Update the Project Configuration**:
+   - Replace the placeholder path to the JSON file in `server.py` with the actual path to your downloaded file:
+     ```python
+     SERVICE_ACCOUNT_FILE = '/path/to/your-credentials-file.json'
+     ```
